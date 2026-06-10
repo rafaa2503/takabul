@@ -5,4 +5,5 @@ export default defineCliConfig({
     projectId: 'nk67e8ao',
     dataset: 'production',
   },
+  studioHost: 'takabul',
 })
