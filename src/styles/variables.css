@@ -1,0 +1,23 @@
+:root {
+  --red-primary:   #7D0013;
+  --red-button:    #970016;
+  --red-dark:      #2F0C0B;
+  --red-deep:      #1E0707;
+  --creme:         #EEE6DA;
+  --creme-light:   #F9F4EC;
+  --card-bg:       #FCFAF5;
+  --text-dark:     #3A0B0B;
+  --gold:          #C99455;
+  --white:         #FFF8F0;
+
+  --font-serif:    'Cormorant Garamond', Georgia, serif;
+  --font-sans:     'Inter', system-ui, sans-serif;
+
+  --section-py:    clamp(5rem, 10vw, 9rem);
+  --container-max: 1200px;
+  --container-px:  clamp(1.5rem, 5vw, 3rem);
+  --nav-h:         72px;
+  --radius-btn:    99px;
+  --radius-card:   12px;
+  --transition:    all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
