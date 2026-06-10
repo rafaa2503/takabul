@@ -1,8 +1,28 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import { sanityClient, urlFor } from '../lib/sanityClient'
+import { naseebQuery, type NaseebContent } from '../lib/queries'
+
+const defaultContent: NaseebContent = {
+  naseebLabel: 'Naseeb',
+  naseebQuoteLine1: 'Nicht jede Chance kommt zweimal.',
+  naseebQuoteLine2: 'Manchmal beginnt etwas Besonderes mit einem einzigen Gespräch.',
+  naseebCta: 'Jetzt Ticket sichern',
+}
 
 export default function NaseebQuote() {
   const ref = useRef<HTMLElement>(null)
+  const [content, setContent] = useState<NaseebContent>(defaultContent)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    sanityClient.fetch<NaseebContent>(naseebQuery)
+      .then(data => {
+        if (data) setContent({ ...defaultContent, ...data })
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -17,24 +37,26 @@ export default function NaseebQuote() {
     return () => ctx.revert()
   }, [])
 
+  const bgImageSrc = content.naseebBgImage?.asset
+    ? urlFor(content.naseebBgImage).width(1920).url()
+    : '/img/4.png'
+
   return (
-    <section className="naseeb-quote" ref={ref}>
-      <img className="naseeb-bg" src="/img/4.png" alt="" aria-hidden="true" />
+    <section className="naseeb-quote" ref={ref} data-loading={loading}>
+      <img className="naseeb-bg" src={bgImageSrc} alt="" aria-hidden="true" />
       <div className="naseeb-overlay" />
       <div className="container">
-        <p className="quote-label">Naseeb</p>
+        <p className="quote-label">{content.naseebLabel}</p>
         <h2 className="quote-text">
           <span className="quote-line-wrapper">
-            <span className="quote-line-1">Nicht jede Chance kommt zweimal.</span>
+            <span className="quote-line-1">{content.naseebQuoteLine1}</span>
           </span>
           <span className="quote-line-wrapper">
-            <em className="quote-line-2">
-              Manchmal beginnt etwas Besonderes mit einem einzigen Gespräch.
-            </em>
+            <em className="quote-line-2">{content.naseebQuoteLine2}</em>
           </span>
         </h2>
         <a href="#tickets" className="btn btn-primary naseeb-cta">
-          Jetzt Ticket sichern
+          {content.naseebCta}
         </a>
       </div>
     </section>

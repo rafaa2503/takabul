@@ -1,6 +1,11 @@
 .vercel
 node_modules
 dist
+.sanity
 .claude
+.env*.local
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
 *.pdf
 Takabul SVG Datei.svg

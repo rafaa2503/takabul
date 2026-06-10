@@ -1,9 +1,35 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { sanityClient, urlFor } from '../lib/sanityClient'
+import { heroQuery, type HeroContent } from '../lib/queries'
+
+const defaultContent: HeroContent = {
+  heroArabicText: 'بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
+  heroBismillahLatin: 'BISMILLAH AR-RAHMAN AR-RAHIM',
+  heroClaim: 'ISLAMIC SPEED DATING',
+  heroTitleLine1: 'Willkommen — finde',
+  heroTitleLine2: 'dein',
+  heroTitleNaseeb: 'naseeb',
+  heroSubtitle:
+    'Willkommen zu einem respektvollen Abend für muslimische Singles mit ehrlichen Absichten. In entspannter und persönlicher Atmosphäre entstehen hier echte Begegnungen — ohne Druck, dafür mit Klarheit, Respekt und Offenheit.',
+  heroCtaPrimary: 'Nächste Events ansehen',
+  heroCtaSecondary: 'Mehr erfahren',
+}
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null)
+  const [content, setContent] = useState<HeroContent>(defaultContent)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    sanityClient.fetch<HeroContent>(heroQuery)
+      .then(data => {
+        if (data) setContent({ ...defaultContent, ...data })
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -57,18 +83,22 @@ export default function Hero() {
     }
   }, [])
 
+  const bgImageSrc = content.heroBgImage?.asset
+    ? urlFor(content.heroBgImage).width(1920).url()
+    : '/img/6.png'
+
   return (
-    <section className="hero" ref={ref}>
+    <section className="hero" ref={ref} data-loading={loading}>
       <div className="hero-bg">
-        <img className="hero-bg-img" src="/img/6.png" alt="Warme Abendstimmung" />
+        <img className="hero-bg-img" src={bgImageSrc} alt="Warme Abendstimmung" />
         <div className="hero-overlay" />
       </div>
 
       {/* TOP: Bismillah + Logo */}
       <div className="hero-top">
-        <p className="hero-arabic">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
-        <p className="hero-bismillah-latin">BISMILLAH AR-RAHMAN AR-RAHIM</p>
-        <p className="hero-claim">ISLAMIC SPEED DATING</p>
+        <p className="hero-arabic">{content.heroArabicText}</p>
+        <p className="hero-bismillah-latin">{content.heroBismillahLatin}</p>
+        <p className="hero-claim">{content.heroClaim}</p>
       </div>
 
       {/* SPACER */}
@@ -78,24 +108,19 @@ export default function Hero() {
       <div className="hero-bottom">
         <h1 className="hero-title">
           <div className="hero-line-wrapper">
-            <span className="hero-line">Willkommen — finde</span>
+            <span className="hero-line">{content.heroTitleLine1}</span>
           </div>
           <div className="hero-line-wrapper">
-            <span className="hero-line">dein</span>
+            <span className="hero-line">{content.heroTitleLine2}</span>
           </div>
           <div className="hero-line-wrapper">
-            <em className="hero-line hero-naseeb">naseeb</em>
+            <em className="hero-line hero-naseeb">{content.heroTitleNaseeb}</em>
           </div>
         </h1>
-        <p className="hero-subtitle">
-          Willkommen zu einem respektvollen Abend für muslimische Singles
-          mit ehrlichen Absichten. In entspannter und persönlicher Atmosphäre
-          entstehen hier echte Begegnungen — ohne Druck, dafür mit Klarheit,
-          Respekt und Offenheit.
-        </p>
+        <p className="hero-subtitle">{content.heroSubtitle}</p>
         <div className="hero-cta-group">
-          <a className="btn btn-primary" href="#tickets">Nächste Events ansehen</a>
-          <a className="btn btn-outline-light" href="#konzept">Mehr erfahren</a>
+          <a className="btn btn-primary" href="#tickets">{content.heroCtaPrimary}</a>
+          <a className="btn btn-outline-light" href="#konzept">{content.heroCtaSecondary}</a>
         </div>
       </div>
     </section>
