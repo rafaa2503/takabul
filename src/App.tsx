@@ -7,6 +7,7 @@ import Datenschutz from './pages/Datenschutz'
 import { lenis } from './lib/gsap-setup'
 import './styles/global.css'
 import './styles/components.css'
+import './styles/studyswiss.css'
 
 function ScrollToHash() {
   const location = useLocation()

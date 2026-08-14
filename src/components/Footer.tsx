@@ -1,70 +1,54 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { sanityClient, urlFor } from '../lib/sanityClient'
-import { footerQuery, type FooterContent } from '../lib/queries'
-
-const defaultContent: FooterContent = {
-  footerTagline1: 'Islamic Speed Dating',
-  footerTagline2: 'Ein respektvoller Rahmen für ehrliche Begegnungen.',
-  footerNavTitle: 'Navigation',
-  navLinkStart: 'Start',
-  navLinkEvents: 'Events',
-  navLinkTickets: 'Tickets',
-  footerAboutLink: 'Über TAKABUL',
-  footerContactTitle: 'Kontakt',
-  contactEmail: 'salam@takabul.com',
-  footerImpressumLink: 'Impressum',
-  footerDatenschutzLink: 'Datenschutz',
-  footerCopyright: '© 2026 TAKABUL. Alle Rechte vorbehalten.',
-  footerMotto: 'Bismillah · Barakah · Naseeb',
-}
+const currentYear = new Date().getFullYear()
 
 export default function Footer() {
-  const [content, setContent] = useState<FooterContent>(defaultContent)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    sanityClient.fetch<FooterContent>(footerQuery)
-      .then(data => {
-        if (data) setContent({ ...defaultContent, ...data })
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [])
-
-  const logoSrc = content.logoImage?.asset
-    ? urlFor(content.logoImage).width(240).url()
-    : '/logo/takabul-logo.svg'
-
   return (
-    <footer className="footer" data-loading={loading}>
-      <div className="container footer-inner">
-        <div className="footer-top">
-          <div className="footer-brand">
-            <img className="footer-logo" src={logoSrc} alt="TAKABUL" />
-            <p>{content.footerTagline1}</p>
-            <p>{content.footerTagline2}</p>
+    <footer id="contact" className="ss-footer">
+      <div className="ss-footer__inner">
+        <div className="ss-footer__top">
+          <div>
+            <a href="#home" className="ss-footer__logo">
+              <span className="ss-footer__logo-study">Study</span>
+              <span className="ss-footer__logo-swiss">Swiss</span>
+            </a>
+            <p className="ss-footer__tagline">
+              Dein Lernbegleiter für die Schweizer Aufnahmeprüfung.
+              Für Gymnasium, WMS, IMS und FMS.
+            </p>
           </div>
 
-          <div className="footer-col">
-            <p className="footer-nav-title">{content.footerNavTitle}</p>
-            <Link to="/">{content.navLinkStart}</Link>
-            <a href="/#events">{content.navLinkEvents}</a>
-            <a href="/#tickets">{content.navLinkTickets}</a>
-            <a href="/#konzept">{content.footerAboutLink}</a>
+          <div>
+            <h4 className="ss-footer__col-title">Navigation</h4>
+            <ul className="ss-footer__links">
+              {['Home', 'Über uns', 'Kernfunktionen', 'FAQ', 'Investoren'].map(label => (
+                <li key={label}>
+                  <a
+                    href={`#${label.toLowerCase().replace(/ /g, '-')}`}
+                    className="ss-footer__link"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="footer-col">
-            <p className="footer-nav-title">{content.footerContactTitle}</p>
-            <a href={`mailto:${content.contactEmail}`}>{content.contactEmail}</a>
-            <Link to="/impressum">{content.footerImpressumLink}</Link>
-            <Link to="/datenschutz">{content.footerDatenschutzLink}</Link>
+          <div>
+            <h4 className="ss-footer__col-title">Kontakt & Legal</h4>
+            <ul className="ss-footer__links">
+              <li>
+                <a href="mailto:info@studyswiss.ch" className="ss-footer__link">
+                  info@studyswiss.ch
+                </a>
+              </li>
+              <li><a href="#contact" className="ss-footer__link">Kontaktformular</a></li>
+              <li><a href="#" className="ss-footer__link">Datenschutzerklärung</a></li>
+              <li><a href="#" className="ss-footer__link">Impressum</a></li>
+            </ul>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <p>{content.footerCopyright}</p>
-          <p>{content.footerMotto}</p>
+        <div className="ss-footer__bottom">
+          © {currentYear} StudySwiss. Alle Rechte vorbehalten.
         </div>
       </div>
     </footer>
